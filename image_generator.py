@@ -18,11 +18,6 @@ class ImageCreator:
 
     def save_image(self):
         self.add_text()
-        self.img.save(f'img_{self.width}x{self.height}.png')
+        self.img.save(f'img_file.png')
 
 
-width = int(input("Введите ширину изображения: "))
-height = int(input("Введите высоту изображения: "))
-
-creator = ImageCreator(width, height)
-creator.save_image()

@@ -1,8 +1,8 @@
 import telebot
-from PIL import Image, ImageDraw, ImageFont
-
+from image_generator import ImageCreator
+from config import TG_TOKEN
 # Токен бота, полученный от BotFather
-TOKEN = 'your_bot_token_here'
+TOKEN = TG_TOKEN
 
 # Создаем экземпляр бота
 bot = telebot.TeleBot(TOKEN)
@@ -29,28 +29,13 @@ def create_image(message):
         width = int(width)
         height = int(height)
 
-        # Создание изображения с заданным разрешением и белым фоном
-        img = Image.new('RGB', (width, height), color='#FFFFFF')
-
-        # Создание объекта ImageDraw для рисования на изображении
-        draw = ImageDraw.Draw(img)
-
-        # Вывод разрешения в центре изображения
-        text = f"{width}x{height}"
-        font_size = int(min(width, height) * 0.1)
-        font = ImageFont.truetype("SFProText-Regular.ttf", font_size)
-        text_width, text_height = draw.textsize(text, font=font)
-        text_x = (width - text_width) // 2
-        text_y = (height - text_height) // 2
-        draw.text((text_x, text_y), text, font=font, fill='#000000')
-
-        # Сохранение изображения
-        img_file = f'img_{width}x{height}.png'
-        img.save(img_file)
+        # Создаем изображение
+        create = ImageCreator(width, height)
+        img_file = create.save_image()
 
         # Отправляем изображение пользователю
-        with open(img_file, 'rb') as f:
-            bot.send_photo(message.chat.id, f)
+        with open("img_file.png", 'rb') as f:
+            bot.send_document(message.chat.id, f)
 
     except ValueError:
         bot.send_message(message.chat.id, "Неправильный формат команды. Используйте команду /image <ширина> <высота>.")
@@ -59,4 +44,3 @@ def create_image(message):
 
 
 # Запускаем бота
-bot.polling()
